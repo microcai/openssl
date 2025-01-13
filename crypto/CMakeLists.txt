@@ -37,6 +37,7 @@ file(GLOB SRCS
 	chacha/chacha_enc.c
 	cmac/*.c
 	cmp/*.c
+	comp/*.c
 	cms/*.c
 	conf/*.c
 	crmf/*.c
@@ -63,6 +64,7 @@ file(GLOB SRCS
 
 	ffc/*.c
 
+	hpke/*.c
 	hmac/*.c
 	http/*.c
 
@@ -102,6 +104,8 @@ file(GLOB SRCS
 	srp/*.c
 	stack/*.c
 	store/*.c
+	thread/*.c
+	thread/arch/*.c
 	ts/*.c
 	txt_db/*.c
 	ui/*.c
@@ -114,6 +118,8 @@ file(GLOB SRCS
 	ctype.c cpuid.c
 	asn1_dsa.c
 
+	deterministic_nonce.c
+
 	cversion.c  ex_data.c    mem.c      mem_sec.c  o_fopen.c  o_time.c    threads_win.c
 	cpt_err.c   dllmain.c   getenv.c     mem_clr.c  o_dir.c    o_init.c   threads_none.c     uid.c
 	cryptlib.c  ebcdic.c    init.c       mem_dbg.c  o_fips.c   o_str.c    threads_pthread.c
@@ -124,6 +130,8 @@ file(GLOB SRCS
 	packet.c
 
 	param_*.c
+
+	params_idx.c
 
 	params.c
 	params_*.c
@@ -140,6 +148,8 @@ file(GLOB SRCS
 	passphrase.c
 	sparse_*.c
 	trace.c
+	time.c
+	sleep.c
 )
 
 list(FILTER SRCS EXCLUDE REGEX "evp/legacy_wp.*")
@@ -173,6 +183,7 @@ set_target_properties(crypto PROPERTIES FOLDER "third_party/openssl")
 target_compile_definitions(crypto PUBLIC
 	-DOPENSSL_NO_ASM
 	-DOPENSSL_NO_ASYNC
+	-DOPENSSL_NO_BROTLI
 	-DOPENSSL_NO_RC1
 	-DOPENSSL_NO_RC3
 	-DOPENSSL_NO_MD1
@@ -181,11 +192,16 @@ target_compile_definitions(crypto PUBLIC
 	-DOPENSSL_NO_MD4
 	-DOPENSSL_NO_MDC2
 	-DOPENSSL_NO_WHIRLPOOL
-	-DOPENSSL_NO_COMP
 	-DOPENSSL_NO_CHACHA
 	-DOPENSSL_NO_TRACE
+	-DOPENSSL_NO_QUIC
+	-DOPENSSL_NO_QLOG
+	-DOPENSSL_NO_KTLS
+	-DOPENSSL_NO_ZLIB
+	-DOPENSSL_NO_ZSTD
 	-DOPENSSLDIR=""
 	-DOPENSSL_NO_DEPRECATED_3_0
+	-DOPENSSL_NO_COMP_ALG
 	-DWIN32_LEAN_AND_MEAN )
 
 target_compile_definitions(crypto PRIVATE
@@ -211,5 +227,9 @@ endif()
 
 if(NOT MSVC AND NOT APPLE)
 	target_link_libraries(crypto PUBLIC)
+endif()
+
+if (WIN32)
+	target_link_libraries(crypto ws2_32 crypt32)
 endif()
 

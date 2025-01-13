@@ -14,10 +14,10 @@
 # pragma once
 
 # include <openssl/opensslconf.h>
+# include <openssl/ec.h>
+# include <crypto/sm2.h>
 
-# if !defined(OPENSSL_NO_SM2) && !defined(FIPS_MODULE)
-
-#  include <openssl/ec.h>
+# if !defined(OPENSSL_NO_SM2)
 #  include "crypto/types.h"
 
 int ossl_sm2_key_private_check(const EC_KEY *eckey);

@@ -1,9 +1,10 @@
 
-file(GLOB SRCS *.c statem/*.c record/*.c)
+file(GLOB SRCS *.c statem/*.c record/methods/tls_common.c record/methods/*.c record/*.c)
 
 include_directories(../crypto/)
 
 list(FILTER SRCS EXCLUDE REGEX "ktls.c")
+list(FILTER SRCS EXCLUDE REGEX "record/methods/ktls*")
 
 if (SHARED_OPENSSL)
 add_library(ssl SHARED ${SRCS})
